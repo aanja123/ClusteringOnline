@@ -1,6 +1,7 @@
 dash
 plotly
-joblib
+pandas
 librosa
 soundfile
+joblib
 numpy
