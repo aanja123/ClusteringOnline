@@ -1,6 +1,6 @@
-streamlit
-joblib
-numpy
-librosa
+dash
 plotly
+joblib
+librosa
 soundfile
+numpy
