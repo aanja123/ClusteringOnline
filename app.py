@@ -11,7 +11,7 @@ import numpy as np
 import os
 
 # === Load Cluster Data ===
-data_path = "/home/anjaalocal/storage/ClusteringOnline/saved_clusters/audio_cluster_data_Random_Draga_hm.pkl"
+data_path = "saved_clusters/audio_cluster_data_Random_Draga_hm.pkl"
 data = joblib.load(open(data_path, "rb"))
 
 X_2d = data["X_2d_filtered"]
@@ -52,6 +52,7 @@ def on_point_click(clickData):
 
     point_idx = clickData["points"][0]["pointIndex"]
     file_name, start_time = file_map[point_idx]
+    file_name = os.path.join("data", os.path.basename(file_name))  # Updated path for online (local put in #)
     label = labels[point_idx]
     top_pred = cluster_preds.get(label, [("Unknown", 0)])
     top_class = top_pred[0][0] if isinstance(top_pred[0], tuple) else top_pred[0]
