@@ -32,11 +32,21 @@ for key, value in datasets.items():
     value["labels"] = data["cluster_labels_filtered"]
     value["file_map"] = data["file_map_filtered"]
     value["cluster_preds"] = data["cluster_label_predictions"]
+
+    # === New: Generate descriptive labels for legend ===
+    cluster_labels_named = np.array([
+        f"{value['cluster_preds'].get(lbl, [('Unknown', 0)])[0][0]} ({lbl})"
+        if isinstance(value['cluster_preds'].get(lbl, [("Unknown", 0)])[0], tuple)
+        else f"{value['cluster_preds'].get(lbl, ['Unknown'])[0]} ({lbl})"
+        for lbl in value["labels"]
+    ])
+
+    # === Modified: use descriptive cluster labels in color ===
     value["fig"] = px.scatter(
         x=value["X_2d"][:, 0],
         y=value["X_2d"][:, 1],
-        color=value["labels"].astype(str),
-        labels={"x": "UMAP 1", "y": "UMAP 2"},
+        color=cluster_labels_named,  # <-- changed line
+        labels={"x": "UMAP 1", "y": "UMAP 2", "color": "Cluster"},
         title=key,
         hover_name=[f"{os.path.basename(f)} @ {s:.2f}s" for f, s in value["file_map"]],
     )
@@ -46,7 +56,7 @@ app = dash.Dash(__name__)
 app.title = "Clustering"
 
 app.layout = html.Div([
-    html.H2("Clustering"),
+    html.H2("Clustering (click on points to play audio)"),
     html.Div([
         html.Button("Draga", id="btn-draga", n_clicks=0),
         html.Button("Log", id="btn-log", n_clicks=0),
